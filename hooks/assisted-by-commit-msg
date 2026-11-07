@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+# Assisted-by Standard v0.1 — commit-msg hook.
+#
+# Appends:
+#   Assisted-by: <AGENT_NAME> <AGENT_VERSION> (<PROVIDER_SLUG>/<MODEL_SLUG>)
+#
+# Invoked by git as `commit-msg <message-file>`, or by hk as
+# `assisted-by-commit-msg {{commit_msg_file}}`.
+set -euo pipefail
+
+readonly TRAILER_KEY='Assisted-by'
+readonly -a VARS=(AGENT_NAME AGENT_VERSION AGENT_MODEL_PROVIDER_SLUG AGENT_MODEL_SLUG)
+
+die() {
+	printf 'assisted-by: %s\n' "$*" >&2
+	exit 1
+}
+
+msg=${1:-}
+[[ -n $msg ]] || die 'missing commit message file argument'
+[[ -f $msg ]] || die "commit message file not found: $msg"
+
+# Per-commit opt-out, e.g. ASSISTED_BY=0 git commit ...
+[[ ${ASSISTED_BY:-1} == 0 ]] && exit 0
+
+# Existing attribution wins: idempotent, and it respects a trailer the agent
+# or a human already added (Git trailer keys are case-insensitive).
+if grep -qiE '^[[:space:]]*assisted-by[[:space:]]*:' "$msg"; then
+	exit 0
+fi
+
+gitdir=$(git rev-parse --git-dir 2>/dev/null) || die 'not inside a git repository'
+
+# Not commits authored by the agent: merged, picked, reverted, or rebased work
+# reuses someone else's message and authorship.
+for state in MERGE_HEAD CHERRY_PICK_HEAD REVERT_HEAD; do
+	[[ -e $gitdir/$state ]] && exit 0
+done
+if [[ -d $gitdir/rebase-merge || -d $gitdir/rebase-apply ]]; then
+	exit 0
+fi
+
+# All four variables or none. A partial set is a broken integration, not a
+# human commit, and is reported instead of silently mis-attributed.
+present=0
+missing=()
+for var in "${VARS[@]}"; do
+	if [[ -n ${!var:-} ]]; then
+		present=$((present + 1))
+	else
+		missing+=("$var")
+	fi
+done
+
+if ((present == 0)); then
+	exit 0
+fi
+if ((present != ${#VARS[@]})); then
+	die "incomplete agent identity; missing: ${missing[*]}"
+fi
+
+name=${AGENT_NAME}
+version=${AGENT_VERSION}
+provider=${AGENT_MODEL_PROVIDER_SLUG}
+model=${AGENT_MODEL_SLUG}
+
+# Values are interpolated into a trailer line: no control characters, ever.
+for var in "${VARS[@]}"; do
+	value=${!var}
+	case $value in
+	*$'\n'* | *$'\r'* | *$'\t'*) die "$var contains a control character" ;;
+	esac
+done
+
+# Grammar from SPEC.md §4.
+[[ $name =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]] ||
+	die "AGENT_NAME must be lowercase dash-case: '$name'"
+[[ $version =~ ^[0-9A-Za-z][0-9A-Za-z.+-]*$ ]] ||
+	die "AGENT_VERSION must match [0-9A-Za-z][0-9A-Za-z.+-]*: '$version'"
+[[ $provider =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]] ||
+	die "AGENT_MODEL_PROVIDER_SLUG must be lowercase dash-case: '$provider'"
+[[ $model =~ ^[a-z0-9]+([.-][a-z0-9]+)*$ ]] ||
+	die "AGENT_MODEL_SLUG must be lowercase dash-case (dots allowed in version segments): '$model'"
+
+git interpret-trailers --in-place \
+	--trailer "$TRAILER_KEY: $name $version ($provider/$model)" "$msg"

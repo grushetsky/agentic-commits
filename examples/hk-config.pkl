@@ -1,0 +1,18 @@
+// User-level hk configuration: ~/.config/hk/config.pkl
+//
+// Install the hook script on PATH (for example ~/.local/bin) first:
+//   install -m 755 hooks/assisted-by-commit-msg ~/.local/bin/
+//
+// hk merges this file additively with a project's hk.pkl. `hk install --global`
+// only runs in repositories that have an hk configuration of their own.
+amends "package://github.com/jdx/hk/releases/download/v2.11.1/hk@2.11.1#/Config.pkl"
+
+hooks {
+  ["commit-msg"] {
+    steps {
+      ["assisted-by"] {
+        check = "assisted-by-commit-msg '{{commit_msg_file}}'"
+      }
+    }
+  }
+}
