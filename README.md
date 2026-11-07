@@ -6,6 +6,25 @@ v0.1 defines **attribution**: a small, enforceable convention for recording the
 agent and model that produced a commit — without an agent-specific extension
 and without abusing `Co-authored-by:`.
 
+## Relationship to Conventional Commits
+
+[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) defines
+the message shape: `<type>[optional scope]: <description>`, an optional body,
+and footers that follow git trailer syntax. **Agentic Commits is an extension
+of that specification, not a replacement.** It keeps every Conventional Commits
+rule and adds agent-specific requirements:
+
+- one `Assisted-by:` footer identifying the agent and model;
+- an environment contract (`AGENT_*`) that fills that footer.
+
+`Assisted-by` is a valid Conventional Commits footer token — footer tokens use
+`-` in place of whitespace — so an Agentic Commits message is still a valid
+Conventional Commits message. Enforcing the Conventional Commits shape stays
+with existing tooling; this project only adds the attribution layer.
+
+Original project: [conventionalcommits.org](https://www.conventionalcommits.org/)
+· [conventional-commits/conventionalcommits.org](https://github.com/conventional-commits/conventionalcommits.org)
+
 ```text
 feat: reject duplicate idempotency keys
 

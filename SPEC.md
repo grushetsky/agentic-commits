@@ -17,6 +17,11 @@ Assisted-by: <agent-name> <agent-version> (<provider-slug>/<model-slug>)
 The standard is enforced by git, so it works for any current or future agent
 that sets four environment variables before running `git commit`.
 
+Agentic Commits is an extension of
+[Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/):
+it keeps that specification's message structure and adds the attribution footer
+defined here (§2.1).
+
 ## 1. Motivation
 
 Existing agent attribution is inconsistent and often abusive:
@@ -41,8 +46,30 @@ The key words MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT,
 RECOMMENDED, MAY, and OPTIONAL are to be interpreted as described in RFC 2119.
 
 An implementation is conformant when it satisfies §5 (hook behavior) and §6
-(agent requirements). The reference implementation in `hooks/` and the `hk.pkl`
-config are informative examples of a conformant implementation.
+(agent requirements), and the commits it produces satisfy §2.1 (Conventional
+Commits) and §3 (the trailer). The reference implementation in `hooks/` and the
+`hk.pkl` config are informative examples of a conformant implementation.
+
+### 2.1 Relationship to Conventional Commits
+
+Agentic Commits is a profile of
+[Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/),
+not a replacement, and it MUST NOT be read as relaxing any Conventional Commits
+rule.
+
+- A commit conforms to Agentic Commits only if it conforms to Conventional
+  Commits: `<type>[optional scope]: <description>`, then an optional body, then
+  the footer section.
+- The `Assisted-by:` line is a Conventional Commits footer: it uses the
+  `token: value` form, and `Assisted-by` is a valid footer token because tokens
+  replace whitespace with `-` (Conventional Commits 1.0.0, footer rules).
+- This part adds attribution only. Validation of the Conventional Commits shape
+  remains the job of existing tooling — for example, `hk`'s
+  `conventional-commit` builtin; the reference hook enforces §3 and §5.
+
+Conventional Commits is an independent project:
+[conventionalcommits.org](https://www.conventionalcommits.org/) ·
+[conventional-commits/conventionalcommits.org](https://github.com/conventional-commits/conventionalcommits.org).
 
 ## 3. The trailer
 
@@ -237,6 +264,10 @@ git log -1 --format='%(trailers:key=Assisted-by,valueonly)'
   co-authorship.
 - The format is intentionally machine-parsable: agent, version, provider, and
   model are separate tokens.
+- Every conforming message is also a valid
+  [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+  message: `Assisted-by:` is an ordinary footer, and Conventional Commits
+  parsers treat the trailer block as the footer section.
 
 ## 9. Security considerations
 
@@ -277,6 +308,8 @@ is minor or patch.
 
 ## 13. References
 
+- [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/)
+  · [source repository](https://github.com/conventional-commits/conventionalcommits.org)
 - [Git trailer documentation](https://git-scm.com/docs/git-interpret-trailers)
 - [Fedora AI-Assisted Contributions policy](https://communityblog.fedoraproject.org/council-policy-proposal-policy-on-ai-assisted-contributions/)
 - [LLVM AI Tool Use Policy](https://llvm.org/docs/AIToolPolicy.html)

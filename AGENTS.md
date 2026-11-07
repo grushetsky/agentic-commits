@@ -1,7 +1,8 @@
 # AGENTS.md
 
-This repository defines the Agentic Commits conventions. `SPEC.md` is normative;
-everything else is an implementation of it.
+This repository defines the Agentic Commits conventions — an extension of
+[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for AI
+agents. `SPEC.md` is normative; everything else is an implementation of it.
 
 When working here:
 
