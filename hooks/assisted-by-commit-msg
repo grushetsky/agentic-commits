@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Assisted-by Standard v0.1 — commit-msg hook.
+# Agentic Commits — Assisted-by trailer (v0.1) commit-msg hook.
 #
 # Appends:
 #   Assisted-by: <AGENT_NAME> <AGENT_VERSION> (<PROVIDER_SLUG>/<MODEL_SLUG>)

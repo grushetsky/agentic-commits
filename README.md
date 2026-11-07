@@ -1,8 +1,10 @@
-# Assisted-by Standard
+# Agentic Commits
 
-A small, enforceable convention for attributing commits to the coding agent and
-model that produced them — without an agent-specific extension and without
-abusing `Co-authored-by:`.
+Conventions for commits made with AI agents.
+
+v0.1 defines **attribution**: a small, enforceable convention for recording the
+agent and model that produced a commit — without an agent-specific extension
+and without abusing `Co-authored-by:`.
 
 ```text
 feat: reject duplicate idempotency keys
@@ -54,8 +56,8 @@ Rules that matter:
 ## Quick start
 
 ```sh
-git clone <this repo> assisted-by-standard
-cd assisted-by-standard
+git clone <this repo> agentic-commits
+cd agentic-commits
 mise install            # hk 2.11.1
 hk install              # register the commit-msg hook
 ```

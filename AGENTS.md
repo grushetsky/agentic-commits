@@ -1,6 +1,6 @@
 # AGENTS.md
 
-This repository defines the Assisted-by Standard. `SPEC.md` is normative;
+This repository defines the Agentic Commits conventions. `SPEC.md` is normative;
 everything else is an implementation of it.
 
 When working here:

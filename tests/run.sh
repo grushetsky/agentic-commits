@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Tests for the Assisted-by Standard reference implementation.
+# Tests for the Agentic Commits reference implementation.
 set -uo pipefail
 
 root=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)

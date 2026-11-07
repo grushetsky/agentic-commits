@@ -1,6 +1,6 @@
-# Assisted-by Standard
+# Agentic Commits
 
-**Version:** 0.1.0 (Draft) · **Status:** Proposal for adoption · **Trailer key:** `Assisted-by`
+**Part 1 — Attribution** · **Version:** 0.1.0 (Draft) · **Status:** Proposal for adoption · **Trailer key:** `Assisted-by`
 
 ## 0. Abstract
 
